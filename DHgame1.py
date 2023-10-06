@@ -31,7 +31,6 @@ class ThreadWithReturnValue(Thread):
 def findSecretKey(A, B, p, g):
     a, b = None, None
     for x in range(1, p):
-        print("#", end="")
         if (g ** x) % p == A:
             a = x
         if (g ** x) % p == B:
@@ -90,31 +89,47 @@ def power( x, y, p):
         x = (x * x) % p
     return res
 
-def findPrimitive( n) :
-    s = set()
+#def findPrimitive( n) :
+#    s = set()
     # Find value of Euler Totient function
     # of n. Since n is a prime number, the
     # value of Euler Totient function is n-1
     # as there are n-1 relatively prime numbers.
-    phi = n - 1
+#    phi = n - 1
     # Find prime factors of phi and store in a set
-    findPrimeFactors(s, phi)
+#    findPrimeFactors(s, phi)
+#    print ("S is",s)
     # Check for every number from 2 to phi
-    for r in range(2, phi + 1):
+#    for r in range(2, phi + 1):
         # Iterate through all prime factors of phi.
         # and check if we found a power with value 1
-        flag = False
-        for it in s:
+#        flag = False
+#        for it in s:
             # Check if r^((phi)/primefactors)
             # mod n is 1 or not
-            if (power(r, phi // it, n) == 1):
-                flag = True
-                break
+#            if (power(r, phi // it, n) == 1):
+#                flag = True
+#                break
         # If there was no power with value 1.
-        if (flag == False):
-            return r
+#        if (flag == False):
+#            return r
     # If no primitive root found
-    return -1
+#    return -1
+
+def findPrimitive(theNum):
+    o = 1
+    roots = []
+    r = 2
+    while r < theNum:
+        k = pow(r, o, theNum)
+        while (k > 1):
+            o = o + 1
+            k = (k * r) % theNum
+        if o == (theNum - 1):
+            roots.append(r)
+        o = 1
+        r = r + 1
+    return roots[-1]
 
 def isDone():
     print (Fore.WHITE+"done")
@@ -182,9 +197,9 @@ def main():
     pubB = thr_pubB.join()
     print ("  exchange their public keys (A, B):",pubA,"and",pubB)
     print ("  Alice uses Bob's public key (B):",pubB,"to calculate their shared secret (k)...")
-    print ("  Bob uses Alice's public key (A):",pubA,"to calculate their shared secret (k)...")
     thr_kA = ThreadWithReturnValue(target=calcKey, args=(privA, pubB, pubPrimeKey,))
-    thr_kA.start()
+    thr_kA.start()    
+    print ("  Bob uses Alice's public key (A):",pubA,"to calculate their shared secret (k)...")
     thr_kB = ThreadWithReturnValue(target=calcKey, args=(privB, pubA, pubPrimeKey,))
     thr_kB.start()
     kA = thr_kA.join()
@@ -208,9 +223,9 @@ def main():
     print ("")
     print ("  Calculates the secret keys of Alice and Bob using the derived shared secret (k), public known (A), (B), (p) and (g)")
     thr_calcSecretKeyA = ThreadWithReturnValue(target=calcKey, args=(calcPrivKeyA, pubB, pubPrimeKey,))
-    thr_calcSecretKeyA.join()
+    thr_calcSecretKeyA.start()
     thr_calcSecretKeyB = ThreadWithReturnValue(target=calcKey, args=(calcPrivKeyB, pubA, pubPrimeKey,))
-    thr_calcSecretKeyB.join()
+    thr_calcSecretKeyB.start()
     calcSecretKeyA = thr_calcSecretKeyA.join()
     calcSecretKeyB = thr_calcSecretKeyB.join()
     isDone()
