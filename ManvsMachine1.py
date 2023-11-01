@@ -2,6 +2,7 @@ from argparse import ArgumentParser
 from math import sqrt
 import random
 import time
+from sympy import primerange, prime
 from threading import Thread
 from colorama import Fore, Style
 
@@ -53,11 +54,14 @@ def isPrime(N:int):
         return True
 
 def randPrime(N:int):
-    result=0
-    while not isPrime(result):
-        result = randN(N)
-    return result
-
+    min = pow(2, N - 1)
+    max = pow(2, N) - 1
+    primeArray=list(primerange(min, max))
+    return random.choice(primeArray)
+    #result=0
+    #while not isPrime(result):
+    #    result = randN(N)
+    #return result
 
 def findPrimitive(theNum):
     o = 1
@@ -72,7 +76,7 @@ def findPrimitive(theNum):
             roots.append(r)
         o = 1
         r = r + 1
-    return roots[-1]
+    return random.choice(roots)
 
 def isDone():
     print(Style.RESET_ALL,"done")
@@ -149,7 +153,9 @@ def main():
     print(pGreen("Alice and Bob"))
     print("  both generate their secret key",pBlue("(a, b)"),"... ")
     privA = randN(keyLength)
-    privB = randN(keyLength)
+    privB = privA
+    while (privA == privB):
+        privB = randN(keyLength)
     print("    done")
     print("  and keep them secret, even from Mallory in this program (honest! check my source code :P)")
     isDone()
