@@ -3,3 +3,5 @@ numpy
 setuptools
 mpmath
 sympy
+amazon-braket-sdk
+amazon-braket-algorithm-library
