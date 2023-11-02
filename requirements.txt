@@ -1,6 +1,5 @@
 #note: no libraries for Windows available
 numpy
-braketamazon-braket-sdk
 setuptools
 mpmath
 sympy
