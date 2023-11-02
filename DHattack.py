@@ -26,17 +26,17 @@ def main():
 
     a, b = calc_shared_key(A, B, p, g)
     
-    if a != None:
+    if a is not None:
         print('A private key is {}'.format(a))
     else:
         print("Could not find the A's private key :(")
 
-    if b != None:
+    if b is not None:
         print('B private key is {}'.format(b))
     else:
         print("Could not find the B's private key :(")
 
-    if a != None and b != None:
+    if a is not None and b is not None:
         k = (B ** a) % p
         print('A and B shared secret key is {}'.format(k))
     else:

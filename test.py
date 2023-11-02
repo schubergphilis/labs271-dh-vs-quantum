@@ -3,6 +3,7 @@ import sys
 # translated to Python from http://www.bluetulip.org/2014/programs/primitive.js
 # (some rights may remain with the author of the above javascript code)
 
+
 def isNotPrime(possible):
     # We only test this here to protect people who copy and paste
     # the code without reading the first sentence of the answer.
@@ -16,6 +17,7 @@ def isNotPrime(possible):
             return True
         i = i + 1
     return False
+
 
 def primRoots(theNum):
     if isNotPrime(theNum):
