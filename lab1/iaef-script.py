@@ -244,9 +244,10 @@ def main():
               "the same secret", pBlue("(k)"))
     isDone()
 
-    print("Now comes the time to test your human modulo skills...")
-    print("Let's compete with regular CPU", pMagenta("Mallory"),
-          "to find either")
+    print("Now comes the time to test Malory, ",
+          "a program to try and find Alice and Bob secret keys...")
+    print("Regular CPU", pMagenta("Mallory"),
+          "will try to find either")
     print("  ", pGreen("Alice's"), "secret key", pBlue("(a)"), "; or")
     print("  ", pGreen("Bob's"), "secret key", pBlue("(b)"), "; or")
     print("  their shared secret", pBlue("(k)"))
