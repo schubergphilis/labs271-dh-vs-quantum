@@ -1,3 +1,6 @@
+# Script that performs all calculations by prompting the user for the number
+# of bits to be used to generate p, a and b.
+
 import random
 import time
 from sympy import primerange
