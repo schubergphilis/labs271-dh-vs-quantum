@@ -1,6 +1,6 @@
 # Imported Packages/Libraries
-import labfuncs
-
+from labfuncs import (randN, randPrime, findPrimitiveRoot,
+                      calcKey, findSecretKey)
 
 # Functions section
 

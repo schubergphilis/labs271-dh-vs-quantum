@@ -72,19 +72,17 @@ def _randPrime(N: int):
     return random.choice(primeArray)
 
 
-def _findPrimitive(theNum):
-    o = 1
+def _findPrimitiveRoot(p):
+    r = set(range(1, p))
     roots = []
-    r = 2
-    while r < theNum:
-        k = pow(r, o, theNum)
-        while (k > 1):
-            o = o + 1
-            k = (k * r) % theNum
-        if o == (theNum - 1):
-            roots.append(r)
-        o = 1
-        r = r + 1
+    for i in r:
+        gen = set()
+        for x in r:
+            gen.add(pow(i, x, p))
+        if gen == r:
+            roots.append(i)
+            if (len(roots) > 10):
+                break
     return random.choice(roots)
 
 
@@ -167,8 +165,7 @@ def main():
     print("")
     print("Let's agree a bit size (>3) for the random generated keys")
     print(Fore.WHITE + "")
-    keyLength = _inputInt(
-        "What bit size are you going to try and break: ", int)
+    keyLength = _inputInt("What bit size are you going to try and break: ")
     if (keyLength < 4):
         exit(0)
     print("")
@@ -181,12 +178,12 @@ def main():
     _isDone()
 
     print(_pGreen("Alice"))
-    print("  generates public base key", _pBlue("(g)"), "and public prime key",
-          _pBlue("(p)"), "...")
+    print("  generates public prime key", _pBlue("(p)"), "and public base key",
+          _pBlue("(g)"), "...")
     pubBaseKey = -1
     while (pubBaseKey < 0):
         pubPrimeKey = _randPrime(keyLength)
-        pubBaseKey = _findPrimitive(pubPrimeKey)
+        pubBaseKey = _findPrimitiveRoot(pubPrimeKey)
     print("    done")
     print(_pGreen("Alice and Bob"))
     print("  both generate their secret key", _pBlue("(a, b)"), "... ")

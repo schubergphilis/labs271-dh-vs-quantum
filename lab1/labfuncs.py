@@ -18,34 +18,30 @@ class ThreadWithReturnValue(Thread):
         return self._return
 
 
-def randPrime(name: str, N: int):
+def randPrime(N: int):
     min = pow(2, N - 1)
     max = pow(2, N) - 1
     primeArray = list(primerange(min, max))
     result = random.choice(primeArray)
-    print(name, "set to:", result)
     return result
 
 
-def findPrimitive(name: str, N: int):
-    o = 1
+def findPrimitiveRoot(p: int):
+    r = set(range(1, p))
     roots = []
-    r = 2
-    while r < N:
-        k = pow(r, o, N)
-        while (k > 1):
-            o = o + 1
-            k = (k * r) % N
-        if o == (N - 1):
-            roots.append(r)
-        o = 1
-        r = r + 1
+    for i in r:
+        gen = set()
+        for x in r:
+            gen.add(pow(i, x, p))
+        if gen == r:
+            roots.append(i)
+            if (len(roots) > 10):
+                break
     result = random.choice(roots)
-    print(name, "set to:", result)
-    return result
+    return roots, result
 
 
-def randN(N):
+def randN(N: int):
     # bits to decimal
     min = pow(2, N-1)
     max = pow(2, N) - 1
