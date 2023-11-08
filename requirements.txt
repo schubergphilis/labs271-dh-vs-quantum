@@ -1,7 +1,8 @@
 #note: no libraries for Windows available
-numpy
-setuptools
-mpmath
-sympy
 amazon-braket-sdk
 amazon-braket-algorithm-library
+colorama
+mpmath
+numpy
+setuptools
+sympy
