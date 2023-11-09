@@ -5,7 +5,7 @@ import random
 
 class ThreadWithReturnValue(Thread):
     def __init__(self, group=None, target=None, name=None,
-                 args=(), kwargs={}, Verbose=None):
+                 args=(), kwargs={}, verbose=None):
         Thread.__init__(self, group, target, name, args, kwargs)
         self._return = None
 
@@ -18,15 +18,13 @@ class ThreadWithReturnValue(Thread):
         return self._return
 
 
-def randPrime(N: int):
-    min = pow(2, N - 1)
-    max = pow(2, N) - 1
-    primeArray = list(primerange(min, max))
-    result = random.choice(primeArray)
-    return result
+def rand_prime(n: int):
+    min_ = pow(2, n - 1)
+    max_ = pow(2, n) - 1
+    return random.choice(list(primerange(min_, max_)))
 
 
-def findPrimitiveRoot(p: int):
+def find_primitive_root(p: int):
     r = set(range(1, p))
     roots = []
     for i in r:
@@ -35,28 +33,28 @@ def findPrimitiveRoot(p: int):
             gen.add(pow(i, x, p))
         if gen == r:
             roots.append(i)
-            if (len(roots) > 10):
+            if len(roots) > 10:
                 break
     result = random.choice(roots)
     return roots, result
 
 
-def randN(N: int):
+def rand_n(n: int):
     # bits to decimal
-    min = pow(2, N-1)
-    max = pow(2, N) - 1
-    return random.randint(min, max)
+    min_ = pow(2, n - 1)
+    max_ = pow(2, n) - 1
+    return random.randint(min_, max_)
 
 
-def calcKey(key, g, p):
+def calc_key(key, g, p):
     return (g ** key) % p
 
 
-def findSecretKey(A, B, p, g):
-    a, b = None, None
+def find_secret_key(a, b, p, g):
+    a_, b_ = None, None
     for x in range(1, p):
-        if (g ** x) % p == A:
-            a = x
-        if (g ** x) % p == B:
-            b = x
-    return a, b
+        if calc_key(x, g, p) == a:
+            a_ = x
+        if calc_key(x, g, p) == b:
+            b_ = x
+    return a_, b_

@@ -1,6 +1,6 @@
 # Imported Packages/Libraries
-from labfuncs import (randN, randPrime, findPrimitiveRoot,
-                      calcKey, findSecretKey)
+from labfuncs import (rand_n, rand_prime, find_primitive_root,
+                      calc_key, find_secret_key)
 
 # Functions section
 
@@ -9,7 +9,7 @@ def main():
 
     #  #  # Place your code here #  #  #
 
-    exit
+    raise SystemExit()
 
 
 if __name__ == '__main__':
