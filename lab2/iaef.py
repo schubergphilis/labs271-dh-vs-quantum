@@ -9,7 +9,7 @@ from braket.experimental.algorithms.shors.shors import (
 )
 
 
-def _inputInt(message, input_type=int):
+def _input_int(message, input_type=int):
     while True:
         try:
             return input_type(input(message))
@@ -22,11 +22,11 @@ def _inputInt(message, input_type=int):
             exit(1)
 
 
-def randN(bits: int):
+def rand_n(bits: int):
     # bits to decimal
-    min = pow(2, bits-1)
-    max = pow(2, bits) - 1
-    result = random.randint(min, max)
+    min_ = pow(2, bits-1)
+    max_ = pow(2, bits) - 1
+    result = random.randint(min_, max_)
     print("N is set to:", result)
     return result
 
@@ -34,15 +34,15 @@ def randN(bits: int):
 def main():
     # Main function
 
-    nrOfBits = _inputInt(
+    nr_of_bits = _input_int(
         "What bit size are you going to try and break: ", int)
 
-    N = randN(nrOfBits)
+    N = rand_n(nr_of_bits)
 
     a = 2
     result = []
     while 1 < a < N:
-        if (gcd(a, N) == 1):
+        if gcd(a, N) == 1:
             print("Found an eligible a:", a)
             result.append(a)
         a += 1
