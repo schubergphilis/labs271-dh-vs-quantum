@@ -1,65 +1,66 @@
-from labfuncs import (randN, randPrime, findPrimitiveRoot,
-                      calcKey, findSecretKey)
+from labfuncs import (rand_n, rand_prime, find_primitive_root,
+                      calc_key, find_secret_key)
 
 
 def main():
+    bit_size = 16
 
-    bitSize = 16
-
-    print("Given the bitSize of", bitSize)
+    print("Given the bitSize of", bit_size)
     print("    the Private keys of Alice & Bob will be")
-    print("         larger than:", pow(2, bitSize - 1),"and")
-    print("        smaller than:", pow(2, bitSize) - 1)
+    print("         larger than:", pow(2, bit_size - 1), "and")
+    print("        smaller than:", pow(2, bit_size) - 1)
 
-    pubBaseKey = 0
-    while (pubBaseKey < 2):
-        pubPrimeKey = randPrime(bitSize)
-        primitiveRoots, pubBaseKey = findPrimitiveRoot(pubPrimeKey)
+    pub_base_key = 0
+    pub_prime_key = None
+    primitive_roots = None
+    while pub_base_key < 2:
+        pub_prime_key = rand_prime(bit_size)
+        primitive_roots, pub_base_key = find_primitive_root(pub_prime_key)
     print("    the Public Prime key (p)")
-    print("        is set to:", pubPrimeKey)
+    print("        is set to:", pub_prime_key)
     print("    the derived Public Base key (g) is")
-    print("        selected from:", primitiveRoots)
-    print("        and set to:", pubBaseKey)
+    print("        selected from:", primitive_roots)
+    print("        and set to:", pub_base_key)
 
-    privA = randN(bitSize)
-    privB = privA
-    while (privA == privB):
-        privB = randN(bitSize)
+    priv_a = rand_n(bit_size)
+    priv_b = priv_a
+    while priv_a == priv_b:
+        priv_b = rand_n(bit_size)
 
     print("The Private key of")
-    print("    Alice is:", privA)
-    print("      Bob is:", privB)
+    print("    Alice is:", priv_a)
+    print("      Bob is:", priv_b)
 
-    pubA = calcKey(privA, pubBaseKey, pubPrimeKey)
-    pubB = calcKey(privB, pubBaseKey, pubPrimeKey)
+    pub_a = calc_key(priv_a, pub_base_key, pub_prime_key)
+    pub_b = calc_key(priv_b, pub_base_key, pub_prime_key)
 
     print("The Public key of")
-    print("    Alice is:", pubA)
-    print("      Bob is:", pubB)
+    print("    Alice is:", pub_a)
+    print("      Bob is:", pub_b)
 
-    sharedSecretA = calcKey(privA, pubB, pubPrimeKey)
-    sharedSecretB = calcKey(privB, pubA, pubPrimeKey)
+    shared_secret_a = calc_key(priv_a, pub_b, pub_prime_key)
+    shared_secret_b = calc_key(priv_b, pub_a, pub_prime_key)
 
-    if (sharedSecretA != sharedSecretB):
+    if shared_secret_a != shared_secret_b:
         print("ERROR: Alice's & Bob's sharedSecret are not the same")
         exit()
 
     print("The Shared secret of")
-    print("    Alice is:", sharedSecretA)
-    print("      Bob is:", sharedSecretB)
+    print("    Alice is:", shared_secret_a)
+    print("      Bob is:", shared_secret_b)
 
     print("Malory determines")
-    malPrivKeyA, malPrivKeyB = findSecretKey(pubA, pubB,
-                                             pubPrimeKey, pubBaseKey)
+    mal_priv_key_a, mal_priv_key_b = find_secret_key(pub_a, pub_b,
+                                                     pub_prime_key, pub_base_key)
 
-    print("    Alice's private key to be:", malPrivKeyA)
-    print("    Bob's private key to be:", malPrivKeyB)
+    print("    Alice's private key to be:", mal_priv_key_a)
+    print("    Bob's private key to be:", mal_priv_key_b)
 
-    malSharedSecretA = calcKey(malPrivKeyA, pubB, pubPrimeKey)
-    malSharedSecretB = calcKey(malPrivKeyB, pubA, pubPrimeKey)
+    mal_shared_secret_a = calc_key(mal_priv_key_a, pub_b, pub_prime_key)
+    mal_shared_secret_b = calc_key(mal_priv_key_b, pub_a, pub_prime_key)
 
-    print("    Alice's shared secret to be:", malSharedSecretA)
-    print("    Bob's shared secret to be:", malSharedSecretB)
+    print("    Alice's shared secret to be:", mal_shared_secret_a)
+    print("    Bob's shared secret to be:", mal_shared_secret_b)
 
 
 if __name__ == '__main__':
