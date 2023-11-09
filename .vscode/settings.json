@@ -1,9 +1,0 @@
-{
-  "cSpell.ignoreWords": [
-    "priv"
-  ],
-  "debug.javascript.defaultRuntimeExecutable": {
-    
-    "pwa-node": "node"
-  }
-}
