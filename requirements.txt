@@ -4,5 +4,6 @@ amazon-braket-algorithm-library
 colorama
 mpmath
 numpy
+openqasm
 setuptools
 sympy
