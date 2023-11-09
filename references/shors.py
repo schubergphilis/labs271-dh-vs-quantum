@@ -23,7 +23,7 @@ from braket.devices import Device
 
 
 @circuit.subroutine(register=True)
-def shors_algorithm(integer_N: int, integer_a: int) -> Circuit:
+def shors_algorithm(integer_n: int, integer_a: int) -> Circuit:
     """
     Creates the circuit for Shor's algorithm.
       1) Based on integer N, calculate number of counting qubits for the first register
@@ -32,7 +32,7 @@ def shors_algorithm(integer_N: int, integer_a: int) -> Circuit:
       3) Apply inverse_QFT
 
     Args:
-        integer_N (int) : The integer N to be factored
+        integer_n (int) : The integer N to be factored
         integer_a (int) : Any integer 'a' that satisfies 1 < a < N and gcd(a, N) = 1.
 
     Returns:
@@ -40,13 +40,13 @@ def shors_algorithm(integer_N: int, integer_a: int) -> Circuit:
     """
 
     # validate the inputs
-    if integer_N < 1 or integer_N % 2 == 0:
+    if integer_n < 1 or integer_n % 2 == 0:
         raise ValueError("The input N needs to be an odd integer greater than 1.")
-    if integer_a >= integer_N or math.gcd(integer_a, integer_N) != 1:
+    if integer_a >= integer_n or math.gcd(integer_a, integer_n) != 1:
         raise ValueError('The integer "a" needs to satisfy 1 < a < N and gcd(a, N) = 1.')
 
     # calculate number of qubits needed
-    n = int(np.ceil(np.log2(integer_N)))
+    n = int(np.ceil(np.log2(integer_n)))
     m = n
 
     counting_qubits = [*range(n)]
@@ -159,7 +159,7 @@ def modular_exponentiation_amod15(
         r = 2**x
         if integer_a not in [2, 7, 8, 11, 13]:
             raise ValueError("integer 'a' must be 2,7,8,11 or 13")
-        for iteration in range(r):
+        for _ in range(r):
             if integer_a in [2, 13]:
                 mod_exp_amod15.cswap(x, aux_qubits[0], aux_qubits[1])
                 mod_exp_amod15.cswap(x, aux_qubits[1], aux_qubits[2])
@@ -180,7 +180,7 @@ def modular_exponentiation_amod15(
 
 def get_factors_from_results(
     results: Dict[str, Any],
-    integer_N: int,
+    integer_n: int,
     integer_a: int,
     verbose: bool = True,
 ) -> Dict[str, Any]:
@@ -191,7 +191,7 @@ def get_factors_from_results(
     Args:
         results (Dict[str, Any]): Results associated with quantum phase estimation run as produced
             by run_shors_algorithm
-        integer_N (int) : The integer to be factored
+        integer_n (int) : The integer to be factored
         integer_a (int) : Any integer that satisfies 1 < a < N and gcd(a, N) = 1.
         verbose (bool) : If True, prints aggregate results (default is False)
     Returns:
@@ -211,13 +211,13 @@ def get_factors_from_results(
     for phase in phases_decimal:
         if verbose:
             print(f"\nFor phase {phase} :")
-        r = (Fraction(phase).limit_denominator(integer_N)).denominator
+        r = (Fraction(phase).limit_denominator(integer_n)).denominator
         r_guesses.append(r)
         if verbose:
             print(f"Estimate for r is : {r}")
         factor = [
-            math.gcd(integer_a ** (r // 2) - 1, integer_N),
-            math.gcd(integer_a ** (r // 2) + 1, integer_N),
+            math.gcd(integer_a ** (r // 2) - 1, integer_n),
+            math.gcd(integer_a ** (r // 2) + 1, integer_n),
         ]
         factors.append(factor[0])
         factors.append(factor[1])
@@ -225,7 +225,7 @@ def get_factors_from_results(
             print(f"Factors are : {factor[0]} and {factor[1]}")
     factors_set = set(factors)
     factors_set.discard(1)
-    factors_set.discard(integer_N)
+    factors_set.discard(integer_n)
     if verbose:
         print(f"\n\nNon-trivial factors found are : {factors_set}")
 
@@ -287,14 +287,14 @@ def _binary_to_decimal(binary: str) -> float:
         float: decimal value
     """
 
-    fracDecimal = 0
+    frac_decimal = 0
 
     # Convert fractional part of binary to decimal equivalent
     twos = 2
 
     for ii in range(len(binary)):
-        fracDecimal += (ord(binary[ii]) - ord("0")) / twos
+        frac_decimal += (ord(binary[ii]) - ord("0")) / twos
         twos *= 2.0
 
     # return fractional part
-    return fracDecimal
+    return frac_decimal

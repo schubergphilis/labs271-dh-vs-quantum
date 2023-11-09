@@ -10,7 +10,7 @@ from colorama import Fore, Style
 
 class ThreadWithReturnValue(Thread):
     def __init__(self, group=None, target=None, name=None,
-                 args=(), kwargs={}, Verbose=None):
+                 args=(), kwargs={}, verbose=None):
         Thread.__init__(self, group, target, name, args, kwargs)
         self._return = None
 
@@ -23,56 +23,54 @@ class ThreadWithReturnValue(Thread):
         return self._return
 
 
-def _inputInt(message):
-    userInput = input(message)
+def _input_int(message):
+    user_input = input(message)
     try:
-        result = int(userInput)
+        result = int(user_input)
     except ValueError:
-        print(userInput, "is not a valid integer")
-        exit(1)
+        print(user_input, "is not a valid integer")
+        raise SystemExit(1)
     return result
 
 
-def _calcKey(key, g, p):
+def _calc_key(key, g, p):
     return (g ** key) % p
 
 
-def _findSecretKey(A, B, p, g):
-    a, b = None, None
+def _find_secret_key(a, b, p, g):
+    a_, b_ = None, None
     for x in range(1, p):
-        if (g ** x) % p == A:
-            a = x
-        if (g ** x) % p == B:
-            b = x
-    return a, b
+        if _calc_key(x, g, p) == a:
+            a_ = x
+        if _calc_key(x, g, p) == b:
+            b_ = x
+    return a_, b_
 
 
-def _randN(N):
+def _rand_n(n):
     # bits to decimal
-    min = pow(2, N-1)
-    max = pow(2, N) - 1
-    return random.randint(min, max)
+    min_ = pow(2, n - 1)
+    max_ = pow(2, n) - 1
+    return random.randint(min_, max_)
 
 
-def _isPrime(N: int):
+def _is_prime(n: int):
     # check if integer is prime
-    if N <= 1:
+    if n <= 1:
         return False
-    for i in range(2, int(N**0.5) + 1):
-        if (N % i) == 0:
+    for i in range(2, int(n ** 0.5) + 1):
+        if (n % i) == 0:
             return False
-    else:
-        return True
+    return True
 
 
-def _randPrime(N: int):
-    min = pow(2, N - 1)
-    max = pow(2, N) - 1
-    primeArray = list(primerange(min, max))
-    return random.choice(primeArray)
+def _rand_prime(n: int):
+    min_ = pow(2, n - 1)
+    max_ = pow(2, n) - 1
+    return random.choice(list(primerange(min_, max_)))
 
 
-def _findPrimitiveRoot(p):
+def _find_primitive_root(p):
     r = set(range(1, p))
     roots = []
     for i in r:
@@ -81,46 +79,46 @@ def _findPrimitiveRoot(p):
             gen.add(pow(i, x, p))
         if gen == r:
             roots.append(i)
-            if (len(roots) > 10):
+            if len(roots) > 10:
                 break
     return random.choice(roots)
 
 
-def _isDone():
+def _is_done():
     print(Style.RESET_ALL, "done")
     print("")
     input("Press Enter to continue...")
     print("")
 
 
-def _pBlue(str):
-    return (Fore.BLUE + str + Style.RESET_ALL)
+def _p_blue(str):
+    return Fore.BLUE + str + Style.RESET_ALL
 
 
-def _pRed(str):
-    return (Fore.RED + str + Style.RESET_ALL)
+def _p_red(str):
+    return Fore.RED + str + Style.RESET_ALL
 
 
-def _pGreen(str):
-    return (Fore.GREEN + str + Style.RESET_ALL)
+def _p_green(str):
+    return Fore.GREEN + str + Style.RESET_ALL
 
 
-def _pYellow(str):
-    return (Fore.YELLOW + str + Style.RESET_ALL)
+def _p_yellow(str):
+    return Fore.YELLOW + str + Style.RESET_ALL
 
 
-def _pMagenta(str):
-    return (Fore.MAGENTA + str + Style.RESET_ALL)
+def _p_magenta(str):
+    return Fore.MAGENTA + str + Style.RESET_ALL
 
 
-def _checkAnswer(title, userAnswer, Answer):
+def _check_answer(title, user_answer, answer):
     print(title)
-    if (userAnswer == Answer):
-        print("  Congratulations!", _pGreen(str(Answer)),
+    if user_answer == answer:
+        print("  Congratulations!", _p_green(str(answer)),
               "is indeed the correct answer!")
     else:
-        print("  Sorry, but", _pRed(str(userAnswer)), "is wrong,",
-              _pGreen(str(Answer)), "is the correct answer.")
+        print("  Sorry, but", _p_red(str(user_answer)), "is wrong,",
+              _p_green(str(answer)), "is the correct answer.")
 
 
 def main():
@@ -130,182 +128,182 @@ def main():
     print("In this example the parties are Alice and Bob, ",
           "a well-known couple in Cryptography")
     print("Overview of all the steps:")
-    print(_pGreen("Alice"), "will")
-    print("  generate her private key", _pBlue("(a)"))
-    print("  generate public prime number", _pBlue("(p)"))
-    print("  calculate base key", _pBlue("(g)"),
-          "as a primitive root modulo of", _pBlue("(p)"))
-    print("  calculate her public key", _pBlue("(A)"),
-          "using the following formula:", _pYellow("(g)^(a) MOD (p)"))
-    print("  share", _pBlue("(g), (p)"), "and her public key",
-          _pBlue("(A)"), "with", _pGreen("Bob"))
-    print(_pGreen("Bob"), "will")
-    print("  generate his private key", _pBlue("(b)"))
-    print("  calculate his public key", _pBlue("(B)"),
-          "using the following formula:", _pYellow("(g)^(b) MOD (p)"))
-    print("  share his public key", _pBlue("(B)"), "with", _pGreen("Alice"))
-    print(_pGreen("Alice and Bob"), "will use")
-    print("   their private key", _pBlue("(a or b)"), "; and")
-    print("   each others public key", _pBlue("(A or B)"), "; and")
-    print("   the shared public prime number", _pBlue("(p)"))
-    print("   to calculate their shared secret key", _pBlue("(k)"),
+    print(_p_green("Alice"), "will")
+    print("  generate her private key", _p_blue("(a)"))
+    print("  generate public prime number", _p_blue("(p)"))
+    print("  calculate base key", _p_blue("(g)"),
+          "as a primitive root modulo of", _p_blue("(p)"))
+    print("  calculate her public key", _p_blue("(A)"),
+          "using the following formula:", _p_yellow("(g)^(a) MOD (p)"))
+    print("  share", _p_blue("(g), (p)"), "and her public key",
+          _p_blue("(A)"), "with", _p_green("Bob"))
+    print(_p_green("Bob"), "will")
+    print("  generate his private key", _p_blue("(b)"))
+    print("  calculate his public key", _p_blue("(B)"),
+          "using the following formula:", _p_yellow("(g)^(b) MOD (p)"))
+    print("  share his public key", _p_blue("(B)"), "with", _p_green("Alice"))
+    print(_p_green("Alice and Bob"), "will use")
+    print("   their private key", _p_blue("(a or b)"), "; and")
+    print("   each others public key", _p_blue("(A or B)"), "; and")
+    print("   the shared public prime number", _p_blue("(p)"))
+    print("   to calculate their shared secret key", _p_blue("(k)"),
           "using the following formula:",
-          _pYellow("(a or b)^(A or B) MOD (p)"))
-    _isDone()
+          _p_yellow("(a or b)^(A or B) MOD (p)"))
+    _is_done()
 
     print("It should be obvious that the longer the keys, ",
           "the harder the challenge to either calculate ",
           "(or break) Diffie Hellman.")
     print("This program will challenge you to a competition ",
-          "in finding the shared secret", _pBlue("(k)"), "of",
-          _pGreen("Alice and Bob"))
+          "in finding the shared secret", _p_blue("(k)"), "of",
+          _p_green("Alice and Bob"))
     print("The program will therefore")
-    print("  generate random", _pBlue("a,b and p"), "; and")
-    print("  calculate", _pBlue("g,A,B and k"))
+    print("  generate random", _p_blue("a,b and p"), "; and")
+    print("  calculate", _p_blue("g,A,B and k"))
     print("")
     print("Let's agree a bit size (>3) for the random generated keys")
     print(Fore.WHITE + "")
-    keyLength = _inputInt("What bit size are you going to try and break: ")
-    if (keyLength < 4):
-        exit(0)
+    key_length = _input_int("What bit size are you going to try and break: ")
+    if key_length < 4:
+        raise SystemExit()
     print("")
-    print(_pYellow("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+"))
+    print(_p_yellow("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+"))
     print("Hint: In decimals, the generated keys")
     print("and prime number will be")
-    print("  bigger than", (pow(2, keyLength-1)))
-    print("  smaller than", (pow(2, keyLength)-1))
-    print(_pYellow("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+"))
-    _isDone()
+    print("  bigger than", (pow(2, key_length - 1)))
+    print("  smaller than", (pow(2, key_length) - 1))
+    print(_p_yellow("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+"))
+    _is_done()
 
-    print(_pGreen("Alice"))
-    print("  generates public prime key", _pBlue("(p)"), "and public base key",
-          _pBlue("(g)"), "...")
-    pubBaseKey = -1
-    while (pubBaseKey < 0):
-        pubPrimeKey = _randPrime(keyLength)
-        pubBaseKey = _findPrimitiveRoot(pubPrimeKey)
+    print(_p_green("Alice"))
+    print("  generates public prime key", _p_blue("(p)"), "and public base key",
+          _p_blue("(g)"), "...")
+    pub_base_key = -1
+    while pub_base_key < 0:
+        pub_prime_key = _rand_prime(key_length)
+        pub_base_key = _find_primitive_root(pub_prime_key)
     print("    done")
-    print(_pGreen("Alice and Bob"))
-    print("  both generate their secret key", _pBlue("(a, b)"), "... ")
-    privA = _randN(keyLength)
-    privB = privA
-    while (privA == privB):
-        privB = _randN(keyLength)
+    print(_p_green("Alice and Bob"))
+    print("  both generate their secret key", _p_blue("(a, b)"), "... ")
+    priv_a = _rand_n(key_length)
+    priv_b = priv_a
+    while priv_a == priv_b:
+        priv_b = _rand_n(key_length)
     print("    done")
     print("  and keep them secret, even from Mallory in this program ",
           "(honest! check my source code :P)")
-    _isDone()
+    _is_done()
 
-    print(_pGreen("Alice"))
-    print("  shares with", _pGreen("Bob"), "public base key",
-          _pBlue("(g)"), ":",
-          _pBlue(str(pubBaseKey)), "and public prime number",
-          _pBlue("(p)"), ":",
-          _pBlue(str(pubPrimeKey)), "...")
-    _isDone()
+    print(_p_green("Alice"))
+    print("  shares with", _p_green("Bob"), "public base key",
+          _p_blue("(g)"), ":",
+          _p_blue(str(pub_base_key)), "and public prime number",
+          _p_blue("(p)"), ":",
+          _p_blue(str(pub_prime_key)), "...")
+    _is_done()
 
-    print(_pGreen("Alice and Bob"))
-    print("  use their private keys", _pBlue("(a, b)"), ";and")
-    print("  the public prime number", _pBlue("(p)"), ":",
-          _pBlue(str(pubPrimeKey)))
-    print("  the public base number", _pBlue("(g)"), ":",
-          _pBlue(str(pubBaseKey)))
-    print("  to calculate their public key", _pBlue("(A, B)"), "...", end="")
-    thr_pubA = ThreadWithReturnValue(target=_calcKey,
-                                     args=(privA, pubBaseKey, pubPrimeKey,))
-    thr_pubA.start()
-    thr_pubB = ThreadWithReturnValue(target=_calcKey,
-                                     args=(privB, pubBaseKey, pubPrimeKey,))
-    thr_pubB.start()
-    pubA = thr_pubA.join()
-    pubB = thr_pubB.join()
+    print(_p_green("Alice and Bob"))
+    print("  use their private keys", _p_blue("(a, b)"), ";and")
+    print("  the public prime number", _p_blue("(p)"), ":",
+          _p_blue(str(pub_prime_key)))
+    print("  the public base number", _p_blue("(g)"), ":",
+          _p_blue(str(pub_base_key)))
+    print("  to calculate their public key", _p_blue("(A, B)"), "...", end="")
+    thr_pub_a = ThreadWithReturnValue(target=_calc_key,
+                                      args=(priv_a, pub_base_key, pub_prime_key,))
+    thr_pub_a.start()
+    thr_pub_b = ThreadWithReturnValue(target=_calc_key,
+                                      args=(priv_b, pub_base_key, pub_prime_key,))
+    thr_pub_b.start()
+    pub_a = thr_pub_a.join()
+    pub_b = thr_pub_b.join()
     print("    done")
 
-    print("  exchange their public keys", _pBlue("(A, B)"), ":",
-          _pBlue(str(pubA)), "and", _pBlue(str(pubB)))
-    print("  Alice uses Bob's public key", _pBlue("(B)"), ":",
-          _pBlue(str(pubB)),
-          "to calculate their shared secret", _pBlue("(k)"), "...")
-    thr_kA = ThreadWithReturnValue(target=_calcKey,
-                                   args=(privA, pubB, pubPrimeKey,))
-    thr_kA.start()
-    print("  Bob uses Alice's public key", _pBlue("(A)"), ":",
-          _pBlue(str(pubA)),
-          "to calculate their shared secret", _pBlue("(k)"), "...")
-    thr_kB = ThreadWithReturnValue(target=_calcKey,
-                                   args=(privB, pubA, pubPrimeKey,))
-    thr_kB.start()
-    kA = thr_kA.join()
-    kB = thr_kB.join()
-    _isDone()
+    print("  exchange their public keys", _p_blue("(A, B)"), ":",
+          _p_blue(str(pub_a)), "and", _p_blue(str(pub_b)))
+    print("  Alice uses Bob's public key", _p_blue("(B)"), ":",
+          _p_blue(str(pub_b)),
+          "to calculate their shared secret", _p_blue("(k)"), "...")
+    thr_k_a = ThreadWithReturnValue(target=_calc_key,
+                                    args=(priv_a, pub_b, pub_prime_key,))
+    thr_k_a.start()
+    print("  Bob uses Alice's public key", _p_blue("(A)"), ":",
+          _p_blue(str(pub_a)),
+          "to calculate their shared secret", _p_blue("(k)"), "...")
+    thr_k_b = ThreadWithReturnValue(target=_calc_key,
+                                    args=(priv_b, pub_a, pub_prime_key,))
+    thr_k_b.start()
+    k_a = thr_k_a.join()
+    k_b = thr_k_b.join()
+    _is_done()
 
     print("Trusted Computer")
     print("  Checks if Alice and Bob have indeed the same shared secret",
-          _pBlue("(k)"), "...")
-    if (kA != kB):
-        print("   ", _pRed("ERROR"), ": shared secret", _pBlue("(k)"),
+          _p_blue("(k)"), "...")
+    if k_a != k_b:
+        print("   ", _p_red("ERROR"), ": shared secret", _p_blue("(k)"),
               "is not the same")
         exit(1)
     else:
-        print("   ", _pGreen("SUCCES"),
+        print("   ", _p_green("SUCCES"),
               "Alice and Bob have indeed calculated ",
-              "the same secret", _pBlue("(k)"))
-    _isDone()
+              "the same secret", _p_blue("(k)"))
+    _is_done()
 
     print("Now comes the time to test Malory, ",
           "a program to try and find Alice and Bob secret keys...")
-    print("Regular CPU", _pMagenta("Mallory"),
+    print("Regular CPU", _p_magenta("Mallory"),
           "will try to find either")
-    print("  ", _pGreen("Alice's"), "secret key", _pBlue("(a)"), "; or")
-    print("  ", _pGreen("Bob's"), "secret key", _pBlue("(b)"), "; or")
-    print("  their shared secret", _pBlue("(k)"))
+    print("  ", _p_green("Alice's"), "secret key", _p_blue("(a)"), "; or")
+    print("  ", _p_green("Bob's"), "secret key", _p_blue("(b)"), "; or")
+    print("  their shared secret", _p_blue("(k)"))
     print("Using")
-    print("  the public prime number", _pBlue("(p)"), ":",
-          _pBlue(str(pubPrimeKey)))
-    print("  the public base number", _pBlue("(g)"), ":",
-          _pBlue(str(pubBaseKey)))
-    print("  Alice's public key", _pBlue("(A)"), ":", _pBlue(str(pubA)))
-    print("  Bob's public key", _pBlue("(B)"), ":", _pBlue(str(pubB)))
+    print("  the public prime number", _p_blue("(p)"), ":",
+          _p_blue(str(pub_prime_key)))
+    print("  the public base number", _p_blue("(g)"), ":",
+          _p_blue(str(pub_base_key)))
+    print("  Alice's public key", _p_blue("(A)"), ":", _p_blue(str(pub_a)))
+    print("  Bob's public key", _p_blue("(B)"), ":", _p_blue(str(pub_b)))
     print("Press ENTER to start the challenge")
-    _isDone()
+    _is_done()
 
     tic = time.perf_counter()
-    print(_pMagenta("Mallory"))
+    print(_p_magenta("Mallory"))
     print("  tries to calculate Alice's and Bob's private key",
-          _pBlue("(a, b)"),
+          _p_blue("(a, b)"),
           "using public known",
-          _pBlue("(A), (B), (p) and (g)"),
+          _p_blue("(A), (B), (p) and (g)"),
           "... ")
-    malPrivKeyA, malPrivKeyB = _findSecretKey(pubA, pubB,
-                                              pubPrimeKey, pubBaseKey)
+    mal_priv_key_a, mal_priv_key_b = _find_secret_key(pub_a, pub_b,
+                                                      pub_prime_key, pub_base_key)
     print("    done")
-    print("  calculates the secret key", _pBlue("(k)"), "of ",
-          _pGreen("Alice and Bob"), "using the derived shared secrets",
-          _pBlue("(a,b)"), "and publicly known",
-          _pBlue("(A), (B), (p)"), "... ")
-    thr_malSecretKeyA = ThreadWithReturnValue(target=_calcKey,
-                                              args=(malPrivKeyA, pubB,
-                                                    pubPrimeKey,))
-    thr_malSecretKeyA.start()
-    thr_malSecretKeyB = ThreadWithReturnValue(target=_calcKey,
-                                              args=(malPrivKeyB, pubA,
-                                                    pubPrimeKey,))
-    thr_malSecretKeyB.start()
-    malSecretKeyA = thr_malSecretKeyA.join()
-    malSecretKeyB = thr_malSecretKeyB.join()
+    print("  calculates the secret key", _p_blue("(k)"), "of ",
+          _p_green("Alice and Bob"), "using the derived shared secrets",
+          _p_blue("(a,b)"), "and publicly known",
+          _p_blue("(A), (B), (p)"), "... ")
+    thr_mal_secret_key_a = ThreadWithReturnValue(target=_calc_key,
+                                                 args=(mal_priv_key_a, pub_b,
+                                                       pub_prime_key,))
+    thr_mal_secret_key_a.start()
+    thr_mal_secret_key_b = ThreadWithReturnValue(target=_calc_key,
+                                                 args=(mal_priv_key_b, pub_a,
+                                                       pub_prime_key,))
+    thr_mal_secret_key_b.start()
+    mal_secret_key_a = thr_mal_secret_key_a.join()
+    mal_secret_key_b = thr_mal_secret_key_b.join()
     print("    done")
 
     toc = time.perf_counter()
     print(f"  used {toc - tic:0.4f} seconds to complete the task")
     print("What did Mallory find?")
-    _checkAnswer("Alice's Private Key", malPrivKeyA, privA)
-    _checkAnswer("Bob's Private Key", malPrivKeyB, privB)
-    _checkAnswer("Alice & Bob shared secret using Alice's private key",
-                 malSecretKeyA, kA)
-    _checkAnswer("Alice & Bob shared secret using Bob's private key",
-                 malSecretKeyB, kB)
+    _check_answer("Alice's Private Key", mal_priv_key_a, priv_a)
+    _check_answer("Bob's Private Key", mal_priv_key_b, priv_b)
+    _check_answer("Alice & Bob shared secret using Alice's private key",
+                  mal_secret_key_a, k_a)
+    _check_answer("Alice & Bob shared secret using Bob's private key",
+                  mal_secret_key_b, k_b)
     print("NOTE: Their might be collisions (duplicate) private keys",
-          _pBlue("(a or b)"),
+          _p_blue("(a or b)"),
           "but knowing the shared secret would already be a massive gain")
 
 
