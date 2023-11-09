@@ -176,8 +176,8 @@ def main():
     _is_done()
 
     print(_p_green("Alice"))
-    print("  generates public prime key", _p_blue("(p)"), "and public base key",
-          _p_blue("(g)"), "...")
+    print("  generates public prime key", _p_blue("(p)"),
+          "and public base key", _p_blue("(g)"), "...")
     pub_base_key = -1
     while pub_base_key < 0:
         pub_prime_key = _rand_prime(key_length)
@@ -210,10 +210,12 @@ def main():
           _p_blue(str(pub_base_key)))
     print("  to calculate their public key", _p_blue("(A, B)"), "...", end="")
     thr_pub_a = ThreadWithReturnValue(target=_calc_key,
-                                      args=(priv_a, pub_base_key, pub_prime_key,))
+                                      args=(priv_a, pub_base_key,
+                                            pub_prime_key,))
     thr_pub_a.start()
     thr_pub_b = ThreadWithReturnValue(target=_calc_key,
-                                      args=(priv_b, pub_base_key, pub_prime_key,))
+                                      args=(priv_b, pub_base_key,
+                                            pub_prime_key,))
     thr_pub_b.start()
     pub_a = thr_pub_a.join()
     pub_b = thr_pub_b.join()
@@ -275,7 +277,8 @@ def main():
           _p_blue("(A), (B), (p) and (g)"),
           "... ")
     mal_priv_key_a, mal_priv_key_b = _find_secret_key(pub_a, pub_b,
-                                                      pub_prime_key, pub_base_key)
+                                                      pub_prime_key,
+                                                      pub_base_key)
     print("    done")
     print("  calculates the secret key", _p_blue("(k)"), "of ",
           _p_green("Alice and Bob"), "using the derived shared secrets",

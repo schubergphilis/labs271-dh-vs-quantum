@@ -51,7 +51,8 @@ def main():
 
     print("Malory determines")
     mal_priv_key_a, mal_priv_key_b = find_secret_key(pub_a, pub_b,
-                                                     pub_prime_key, pub_base_key)
+                                                     pub_prime_key,
+                                                     pub_base_key)
 
     print("    Alice's private key to be:", mal_priv_key_a)
     print("    Bob's private key to be:", mal_priv_key_b)
