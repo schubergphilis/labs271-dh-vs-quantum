@@ -1,4 +1,6 @@
-from qiskit import QuantumCircuit,  execute,  IBMQ
+from qiskit import QuantumRegister
+from qiskit import ClassicalRegister
+from qiskit import QuantumCircuit, execute,  IBMQ
 IBMQ.enable_account("")
 provider = IBMQ.get_provider(hub="ibm-q")
 
@@ -136,7 +138,7 @@ result = job.result()
 counts = result.get_counts(circuit)
 print("RESULT: ", counts, "\n")
 
-######## Cin + A + B ###########################
+# ####### Cin + A + B ###########################
 q = QuantumRegister(5, "q")
 c = ClassicalRegister(2, "c")
 circuit = QuantumCircuit(q, c)
